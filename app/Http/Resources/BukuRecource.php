@@ -21,7 +21,8 @@ class BukuRecource extends JsonResource
             'penerbit_buku' => $this->Penerbit,
             'tahun_terbit' => $this->TahunTerbit,
             'jumlah_halaman' => $this->JumlahHalaman,
-            'rating' => $this->Rating
+            'rating' => $this->Rating == null ? 0 : $this->Rating,
+            'kategori' => $this->whenLoaded('kategori', fn() => $this->kategori->map(fn ($item) => $item->NamaKategori)) 
         ];
     }
 }

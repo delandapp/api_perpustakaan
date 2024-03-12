@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuController;
+use App\Http\Controllers\KategoriBukuController;
+use App\Http\Controllers\KoleksiPribadiController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\UlasanController;
 
@@ -25,8 +27,10 @@ Route::prefix('/users')->group(function() {
 
     Route::group(['middleware' => 'auth:sanctum'], function() {
         Route::get('/buku', [BukuController::class, 'tampilAllBuku']);
+        Route::get('/buku/new', [BukuController::class, 'tampilAllBukuNew']);
         Route::get('/buku/{id}', [BukuController::class, 'tampilBuku']);
         Route::delete('/buku/{id}', [BukuController::class, 'destroyBuku']);
+        Route::get('/popular/buku', [BukuController::class, 'getBukuPopuler']);
 
         Route::get('/pinjam', [PeminjamanController::class, 'tampilAllPeminjaman']);
         Route::get('/pinjam/{id}', [PeminjamanController::class, 'tampilBuku']);
@@ -35,6 +39,11 @@ Route::prefix('/users')->group(function() {
         
         Route::get('/ulasan', [UlasanController::class, 'tampilAllUlasan']);
         Route::post('/ulasan', [UlasanController::class, 'addUlasan']);
+
+        Route::get('/koleksi/{id}', [KoleksiPribadiController::class, 'tampilUlasanBy']);
+        Route::post('/koleksi', [KoleksiPribadiController::class, 'addKoleksi']);
+
+        Route::get('/kategori', [KategoriBukuController::class, 'getAllKategori']);
     });
 });
 
@@ -42,4 +51,7 @@ Route::prefix('/admin')->middleware('auth:sanctum')->group(function() {
     Route::get('/buku', [BukuController::class, 'tampilAllBuku']);
     Route::post('/buku', [BukuController::class, 'addBuku']);
     Route::put('/buku/{id}', [BukuController::class, 'updateBuku']);
+
+    Route::get('/kategori', [KategoriBukuController::class, 'getAllKategori']);
+    Route::post('/kategori', [KategoriBukuController::class, 'createKategori']);
 });

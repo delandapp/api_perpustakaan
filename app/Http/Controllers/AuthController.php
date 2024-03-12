@@ -43,9 +43,9 @@ class AuthController extends Controller
         $data = $request->validated();
         $data_email = explode('@', $data['email']);
         if ($data_email[1] != "smk.belajar.id") {
-            throw ValidationException::withMessages([
-                'email' => ['Email harus @smk.belajar.id'],
-            ]);
+           return response([
+                "status" => 400, 
+                "message" => "Email tidak valid"], 400);
         }
         
         $data = User::create([

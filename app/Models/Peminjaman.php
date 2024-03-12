@@ -12,7 +12,7 @@ class Peminjaman extends Model
     use HasFactory;
     public $incrementing = true;
     protected $table = "Peminjamans";
-    protected $primary_key = "PeminjamanID";
+    protected $primaryKey = "PeminjamanID";
     protected $keyType = "int";
     protected $guarded = ['PeminjamanID'];
 

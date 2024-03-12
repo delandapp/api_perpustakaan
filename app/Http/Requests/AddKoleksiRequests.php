@@ -6,14 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class AddBukuRequests extends FormRequest
+class AddKoleksiRequests extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return TRUE;
     }
 
     /**
@@ -24,14 +24,8 @@ class AddBukuRequests extends FormRequest
     public function rules(): array
     {
         return [
-            'Judul' => 'required|unique:Bukus',
-            'Deskripsi' => 'required|min:40',
-            'Penulis' => 'required|min:5',
-            'Penerbit' => 'required|min:5',
-            'TahunTerbit' => 'required|min:4',
-            'JumlahHalaman' => 'required',
-            'id_kategori' => 'required|array',
-            'CoverBuku' => 'required|image|max:2048',
+            'UserID' => ['required'],
+            'BukuID' => ['required'],
         ];
     }
 

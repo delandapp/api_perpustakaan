@@ -7,6 +7,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -15,7 +16,7 @@ class User extends Authenticatable
     
     public $incrementing = true;
     protected $table = "users";
-    protected $primary_key = "id";
+    protected $primaryKey = "id";
     protected $keyType = "int";
     protected $guarded = ['id'];
 
@@ -58,5 +59,10 @@ class User extends Authenticatable
 
     public function ulasan(): HasMany {
         return $this->hasMany(Peminjaman::class, 'UserID', 'id');
+    }
+
+    public function koleksipribadi(): BelongsToMany
+    {
+            return $this->belongsToMany(Buku::class, 'koleksi_pribadis', 'UserID', 'BukuID');
     }
 }

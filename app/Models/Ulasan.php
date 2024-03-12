@@ -11,7 +11,7 @@ class Ulasan extends Model
     use HasFactory;
     public $incrementing = true;
     protected $table = "ulasan_bukus";
-    protected $primary_key = "UlasanID";
+    protected $primaryKey = "UlasanID";
     protected $keyType = "int";
     protected $guarded = ['UlasanID'];
 
