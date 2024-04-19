@@ -13,10 +13,40 @@ use App\Models\KategoriBuku;
 use App\Models\KategoriBukuRelasi;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 
 class BukuController extends Controller
 {
+    public function searchBuku(Request $request)
+    {
+        $query = $request->get('query');
+
+
+        // Lakukan pencarian pada model Buku
+        $data_buku = Buku::search($query)->get();
+
+        $data_buku = $data_buku->map(function ($item) {
+            return [
+                'BukuID' => $item->BukuID,
+                'Deskripsi' => $item->Deskripsi,
+                'CoverBuku' => env('PUBLIC_IMAGE_URL') . $item->CoverBuku,
+                'Judul' => $item->Judul,
+                'Penulis' => $item->Penulis,
+                'Penerbit' => $item->Penerbit,
+                'TahunTerbit' => $item->TahunTerbit,
+                'JumlahHalaman' => $item->JumlahHalaman,
+                'Rating' =>  floatval($item->ulasan->count() == 0 ? 0 : $item->ulasan()->sum('rating') / $item->ulasan->count()),
+                'Total_ulasan' => $item->ulasan->count(),
+                'JumlahRating' => intval($item->ulasan()->sum('rating')),
+                'JumlahPeminjam' => intval($item->peminjaman()->count()),
+                'Kategori' => $item->kategori->map(function ($item) {
+                    return $item->NamaKategori;
+                })
+            ];
+        });
+        return response(['Status' => 200, 'Message' => 'Berhasil Menampilkan All Buku', 'data' => $data_buku], 200);
+    }
     public function getBukuPopuler()
     {
         $data_buku = Buku::whereHas('ulasan')->with(['ulasan', 'kategori'])->take(8)->get();
@@ -52,6 +82,7 @@ class BukuController extends Controller
         $data_buku = $data_buku->map(function ($item) {
             return [
                 'BukuID' => $item->BukuID,
+                'Deskripsi' => $item->Deskripsi,
                 'CoverBuku' => env('PUBLIC_IMAGE_URL') . $item->CoverBuku,
                 'judul_buku' => $item->Judul,
                 'penulis_buku' => $item->Penulis,
@@ -76,6 +107,7 @@ class BukuController extends Controller
                 'Buku' => $item->buku->map(function ($item) {
                     return [
                         'BukuID' => $item->BukuID,
+                        'Deskripsi' => $item->Deskripsi,
                         'CoverBuku' => env('PUBLIC_IMAGE_URL') . $item->CoverBuku,
                         'Judul' => $item->Judul,
                         'Penulis' => $item->Penulis,
@@ -90,23 +122,54 @@ class BukuController extends Controller
                 })
             ];
         });
-        // $data_buku = Buku::with(['ulasan'])->get();
-        // $data_buku = $data_buku->map(function ($item) {
-        //     return [
-        //         'BukuID' => $item->BukuID,
-        //         'CoverBuku' => env('PUBLIC_IMAGE_URL') . $item->CoverBuku,
-        //         'judul_buku' => $item->Judul,
-        //         'penulis_buku' => $item->Penulis,
-        //         'penerbit_buku' => $item->Penerbit,
-        //         'tahun_terbit' => $item->TahunTerbit,
-        //         'jumlah_halaman' => $item->JumlahHalaman,
-        //         'Rating' =>  floatval($item->ulasan->count() == 0 ? 0 : $item->ulasan()->sum('rating') / $item->ulasan->count()),
-        //         'Total_ulasan' => $item->ulasan->count(),
-        //         'JumlahRating' => intval($item->ulasan()->sum('rating')),
-        //         'JumlahPeminjam' => intval($item->peminjaman()->count())
-        //     ];
-        // });
         return response(['Status' => 200, 'Message' => 'Berhasil Menampilkan All Buku', 'data' => $data_buku], 200);
+    }
+
+    public function tampilBuku($id)
+    {
+        $idUser = Auth::user()->id;
+        $data_buku = Buku::where('BukuID', $id)->first();
+        $ratingDistribution = [];
+        $totalRaters = $data_buku->ulasan()->count(); // Total semua pemberi rating
+
+        if ($totalRaters > 0) {
+            for ($rating = 1; $rating <= 5; $rating++) {
+                $count = $data_buku->ulasan()->where('rating', $rating)->count();
+                $normalizedCount = $count / $totalRaters; // Normalisasi jumlah pemberi rating
+                $ratingDistribution[] = $normalizedCount;
+            }
+        } else {
+            // Jika tidak ada pemberi rating, set semua nilai menjadi 0
+            for ($rating = 1; $rating <= 5; $rating++) {
+                $ratingDistribution[] = 0;
+            }
+        }
+        $data_buku = [
+            'BukuID' => $data_buku->BukuID,
+            'Deskripsi' => $data_buku->Deskripsi,
+            'CoverBuku' => env('PUBLIC_IMAGE_URL') . $data_buku->CoverBuku,
+            'judul_buku' => $data_buku->Judul,
+            'penulis_buku' => $data_buku->Penulis,
+            'penerbit_buku' => $data_buku->Penerbit,
+            'tahun_terbit' => $data_buku->TahunTerbit,
+            'jumlah_halaman' => $data_buku->JumlahHalaman,
+            'Rating' =>  floatval($data_buku->ulasan->count() == 0 ? 0 : $data_buku->ulasan()->sum('rating') / $data_buku->ulasan->count()),
+            'Total_ulasan' => $data_buku->ulasan->count(),
+            'JumlahRating' => intval($data_buku->ulasan()->sum('rating')),
+            'JumlahPeminjam' => intval($data_buku->peminjaman()->count()),
+            'Kategori' => $data_buku->kategori->map(
+                function ($item) {
+                    return $item->NamaKategori;
+                }
+            ),
+            'detail_rating' => $ratingDistribution,
+            'Koleksi' => $data_buku->koleksipribadi->filter(
+                function ($item) use ($idUser) {
+                    return $item->id == $idUser;
+                }
+            )->isNotEmpty()
+        ];
+        return response(['Status' => 200, 'Message' => 'Berhasil Menampilkan Buku', 'data' => $data_buku], 200);
     }
 
     public function addBuku(AddBukuRequests $request)

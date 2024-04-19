@@ -18,6 +18,7 @@ return new class() extends Migration {
             $table->date('TanggalPinjam');
             $table->date('Deadline');
             $table->date('TanggalKembali')->nullable(true);
+            $table->enum('Tampil_User', ['yes','no'])->default('yes');
             $table->enum('Status', ['Disetujui', 'Ditolak', 'Dipinjam', 'Selesai', 'Proses'])->default(null);
             $table->timestamps();
             $table->foreign('UserID')->references('id')->on('users');

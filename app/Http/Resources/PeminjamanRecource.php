@@ -27,6 +27,7 @@ class PeminjamanRecource extends JsonResource
             'penulis_buku' => $this->whenLoaded('users', fn() => $this->buku->Penulis),
             'penerbit_buku' => $this->whenLoaded('users', fn() => $this->buku->Penerbit),
             'tahun_buku' => $this->whenLoaded('users', fn() => $this->buku->TahunTerbit),
+            'coverBuku' => $this->whenLoaded('users', fn() => env('PUBLIC_IMAGE_URL') . $this->buku->CoverBuku),
         ];
     }
 }

@@ -14,10 +14,10 @@ class UlasanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function tampilAllUlasan()
+    public function tampilAllUlasan($id)
     {
-        $data = Ulasan::with(['users','buku'])->get();
-        return Response(['Status' => 200, 'Message' => 'Berhasil Menampilkan Ulasan', 'Data' => UlasanRecource::collection($data)], 200);
+        $data = Ulasan::where('BukuID', $id)->with(['users','buku'])->get();
+        return Response(['Status' => 200, 'Message' => 'Berhasil Menampilkan Ulasan', 'data' => UlasanRecource::collection($data)], 200);
     }
 
     /**

@@ -12,4 +12,5 @@ class KategoriBukuRelasi extends Model
     protected $primaryKey = 'KategoriRelasiID';
     protected $guarded = ['KategoriRelasiID'];
     public $timestamps = false;
+    
 }

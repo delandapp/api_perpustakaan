@@ -8,6 +8,7 @@ use App\Http\Controllers\KategoriBukuController;
 use App\Http\Controllers\KoleksiPribadiController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\UlasanController;
+use App\Models\KoleksiPribadi;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,21 +27,24 @@ Route::prefix('/users')->group(function() {
     Route::post('/registrasi', [AuthController::class, 'registrasi']);
 
     Route::group(['middleware' => 'auth:sanctum'], function() {
+
         Route::get('/buku', [BukuController::class, 'tampilAllBuku']);
         Route::get('/buku/new', [BukuController::class, 'tampilAllBukuNew']);
+        Route::post('/buku/search', [BukuController::class, 'searchBuku']);
         Route::get('/buku/{id}', [BukuController::class, 'tampilBuku']);
         Route::delete('/buku/{id}', [BukuController::class, 'destroyBuku']);
         Route::get('/popular/buku', [BukuController::class, 'getBukuPopuler']);
 
         Route::get('/pinjam', [PeminjamanController::class, 'tampilAllPeminjaman']);
-        Route::get('/pinjam/{id}', [PeminjamanController::class, 'tampilBuku']);
+        Route::get('/pinjam/{id}', [PeminjamanController::class, 'tampilPeminjaman']);
         Route::post('/pinjam', [PeminjamanController::class, 'addPeminjaman']);
-        Route::delete('/pinjam/{id}', [PeminjamanController::class, 'destroyBuku']);
+        Route::delete('/pinjam/{id}', [PeminjamanController::class, 'destroyPinjam']);
         
-        Route::get('/ulasan', [UlasanController::class, 'tampilAllUlasan']);
+        Route::get('/ulasan/{id}', [UlasanController::class, 'tampilAllUlasan']);
         Route::post('/ulasan', [UlasanController::class, 'addUlasan']);
-
+        
         Route::get('/koleksi/{id}', [KoleksiPribadiController::class, 'tampilUlasanBy']);
+        Route::delete('/koleksi/{id}', [KoleksiPribadiController::class, 'deleteKoleksi']);
         Route::post('/koleksi', [KoleksiPribadiController::class, 'addKoleksi']);
 
         Route::get('/kategori', [KategoriBukuController::class, 'getAllKategori']);

@@ -16,6 +16,7 @@ return new class() extends Migration {
             $table->string('Email')->unique();
             $table->string('Password');
             $table->enum('Level', ['User', 'Administrator', 'Petugas']);
+            $table->string('foto_profil');
             $table->rememberToken();
             $table->timestamps();
         });
