@@ -21,6 +21,7 @@ class Buku extends Model
         'Penerbit',
         'TahunTerbit',
         'JumlahHalaman',
+        'CoverBuku',
     ];
     protected $table = "bukus";
     protected $primaryKey = "BukuID";

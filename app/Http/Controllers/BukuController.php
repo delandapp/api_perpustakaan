@@ -75,6 +75,38 @@ class BukuController extends Controller
         });
         return response(['Status' => 200, 'Message' => 'Berhasil Menampilkan All Buku', 'data' => $data_buku], 200);
     }
+    public function tampilBukuKategori($kategori)
+    {
+        $data_buku = Buku::whereHas('kategori', function ($query) use ($kategori) {
+            $query->where('NamaKategori', $kategori);
+        })->with(['ulasan', 'kategori'])->get();
+        // $data_buku = $data_buku->filter(function ($value) use ($kategori){
+        //     return $value->kategori->filter(function ($value) use ($kategori) {
+        //         return $value->NamaKategori == $kategori;
+        //     });
+        // })->values();
+
+        $data_buku = $data_buku->map(function ($item) {
+            return [
+                'BukuID' => $item->BukuID,
+                'Deskripsi' => $item->Deskripsi,
+                'CoverBuku' => env('PUBLIC_IMAGE_URL') . $item->CoverBuku,
+                'Judul' => $item->Judul,
+                'Penulis' => $item->Penulis,
+                'Penerbit' => $item->Penerbit,
+                'TahunTerbit' => $item->TahunTerbit,
+                'JumlahHalaman' => $item->JumlahHalaman,
+                'Rating' =>  floatval($item->ulasan->count() == 0 ? 0 : $item->ulasan()->sum('rating') / $item->ulasan->count()),
+                'Total_ulasan' => $item->ulasan->count(),
+                'JumlahRating' => intval($item->ulasan()->sum('rating')),
+                'JumlahPeminjam' => intval($item->peminjaman()->count()),
+                'Kategori' => $item->kategori->map(function ($item) {
+                    return $item->NamaKategori;
+                })
+            ];
+        });
+        return response(['Status' => 200, 'Message' => 'Berhasil Menampilkan All Buku', 'data' => $data_buku], 200);
+    }
 
     public function tampilAllBukuNew()
     {

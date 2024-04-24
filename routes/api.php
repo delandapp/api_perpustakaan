@@ -25,11 +25,15 @@ use App\Models\KoleksiPribadi;
 Route::prefix('/users')->group(function() {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/registrasi', [AuthController::class, 'registrasi']);
-
+    
     Route::group(['middleware' => 'auth:sanctum'], function() {
+        Route::get('/logout', [AuthController::class,'logout']);
+        Route::put('/update', [AuthController::class, 'update']);
 
+        Route::get('/profil', [AuthController::class,'tampilUser']);
         Route::get('/buku', [BukuController::class, 'tampilAllBuku']);
         Route::get('/buku/new', [BukuController::class, 'tampilAllBukuNew']);
+        Route::get('/buku/kategori/{kategori}', [BukuController::class, 'tampilBukuKategori']);
         Route::post('/buku/search', [BukuController::class, 'searchBuku']);
         Route::get('/buku/{id}', [BukuController::class, 'tampilBuku']);
         Route::delete('/buku/{id}', [BukuController::class, 'destroyBuku']);

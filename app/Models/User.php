@@ -29,7 +29,9 @@ class User extends Authenticatable
         'Username',
         'Email',
         'Password',
+        'NamaLengkap',
         'Level',
+        'NoTelepon',
     ];
 
     /**
@@ -64,5 +66,10 @@ class User extends Authenticatable
     public function koleksipribadi(): BelongsToMany
     {
             return $this->belongsToMany(Buku::class, 'koleksi_pribadis', 'UserID', 'BukuID');
+    }
+
+    public function detailsuser(): HasMany
+    {
+            return $this->hasMany(DetailsUser::class, 'UserID', 'id',);
     }
 }

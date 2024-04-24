@@ -23,6 +23,7 @@ class PeminjamanRecource extends JsonResource
             'tanggal_pinjam' => $this->TanggalPinjam,
             'tanggal_kembali' => $this->TanggalKembali == null ? 'Belum dikembalikan' : $this->TanggalKembali,
             'Deadline' => $this->Deadline,
+            'bukuId' => $this->whenLoaded('users', fn() => $this->buku->BukuID),
             'judul_buku' => $this->whenLoaded('users', fn() => $this->buku->Judul),
             'penulis_buku' => $this->whenLoaded('users', fn() => $this->buku->Penulis),
             'penerbit_buku' => $this->whenLoaded('users', fn() => $this->buku->Penerbit),
