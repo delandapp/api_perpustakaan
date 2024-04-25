@@ -35,6 +35,19 @@ class PeminjamanController extends Controller
         return response(['Status' => 200, 'Message' => 'Berhasil Menampilkan All Peminjaman', 'data' => PeminjamanRecource::collection($peminjaman)], 200);
     }
 
+    public function tampilSelesaiPeminjaman()
+    {
+        $id_user = Auth::user()->id;
+        $peminjaman = Peminjaman::where('UserID', $id_user)->where('Tampil_User', 'yes')->where('Status', 'Selesai')->with(['users', 'buku'])->orderBy('created_at', 'asc')->get();
+        return response(['Status' => 200, 'Message' => 'Berhasil Menampilkan All Peminjaman', 'data' => PeminjamanRecource::collection($peminjaman)], 200);
+    }
+    public function tampilListPeminjaman()
+    {
+        $id_user = Auth::user()->id;
+        $peminjaman = Peminjaman::where('UserID', $id_user)->where('Tampil_User', 'yes')->where('Status', 'Dipinjam')->with(['users', 'buku'])->orderBy('created_at', 'asc')->get();
+        return response(['Status' => 200, 'Message' => 'Berhasil Menampilkan All Peminjaman', 'data' => PeminjamanRecource::collection($peminjaman)], 200);
+    }
+
     public function tampilPeminjaman($id) {
         $id_user = Auth::user()->id;
         $peminjaman = Peminjaman::where('UserID', $id_user)->where('PeminjamanID', $id)->with(['users', 'buku'])->first();

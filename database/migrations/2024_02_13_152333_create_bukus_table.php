@@ -18,7 +18,7 @@ return new class() extends Migration {
             $table->string('Penerbit');
             $table->string('TahunTerbit');
             $table->string('JumlahHalaman');
-            $table->string('CoverBuku');
+            $table->string('CoverBuku')->nullable(true)->default('bukudefault.png');
             $table->timestamps();
         });
     }

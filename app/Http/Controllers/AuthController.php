@@ -44,6 +44,9 @@ class AuthController extends Controller
     public function registrasi(UserRegistrasiRequest $request)
     {
         $data = $request->validated();
+        if($data['namalengkap'] == null) {
+            $data['namalengkap'] == '-';
+        }
         $data_email = explode('@', $data['email']);
         if ($data_email[1] != "smk.belajar.id") {
             return response([
@@ -56,6 +59,7 @@ class AuthController extends Controller
             'Username' => $data['username'],
             'Level' => 'User',
             'Email' => $data['email'],
+            'NamaLengkap' => $data['namalengkap'],
             'Password' => bcrypt($data['password']),
         ]);
 

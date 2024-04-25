@@ -17,6 +17,7 @@ class UserRecource extends JsonResource
         return [
             'id' => $this->id,
             'email' => $this->Email,
+            'namaLengkap' => $this->whenNotNull($this->NamaLengkap),
             'username' => $this->Username,
             'level' => $this->Level,
             'token' => $this->whenNotNull($this->token)

@@ -40,6 +40,8 @@ Route::prefix('/users')->group(function() {
         Route::get('/popular/buku', [BukuController::class, 'getBukuPopuler']);
 
         Route::get('/pinjam', [PeminjamanController::class, 'tampilAllPeminjaman']);
+        Route::get('/pinjam/list', [PeminjamanController::class, 'tampilListPeminjaman']);
+        Route::get('/pinjam/selesai', [PeminjamanController::class, 'tampilSelesaiPeminjaman']);
         Route::get('/pinjam/{id}', [PeminjamanController::class, 'tampilPeminjaman']);
         Route::post('/pinjam', [PeminjamanController::class, 'addPeminjaman']);
         Route::delete('/pinjam/{id}', [PeminjamanController::class, 'destroyPinjam']);
